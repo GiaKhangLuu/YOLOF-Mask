@@ -48,7 +48,7 @@ from detectron2.config import LazyConfig
 from detectron2.config.instantiate import instantiate
 from detectron2.engine import DefaultPredictor
 
-cfg = LazyConfig.load("khang_net/configs/huflit_net/huflitnet_r_50_se_3x.py")
+cfg = LazyConfig.load("yolof_mask/configs/yolof_mask/yolof_mask_r_50_se_3x.py")
 
 cfg.train.device = 'cuda:1'
 cfg.dataloader.evaluator.dataset_name = 'coco2017_val'
@@ -62,7 +62,7 @@ cfg.model.mask_head.num_classes = 80
 #cfg.model.yolof.score_thresh_test = 0.7
 #cfg.model.yolof.max_detections_per_image = 50
 
-cfg.train.init_checkpoint = "./output_huflitnet_r_50_se_3x/model_0259999.pth"
+cfg.train.init_checkpoint = "./output_yolof_mask_r_50_se_3x/model_0259999.pth"
 
 model = instantiate(cfg.model)
 model.to(cfg.train.device)

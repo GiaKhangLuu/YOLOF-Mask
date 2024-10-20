@@ -26,7 +26,7 @@ from detectron2.data.datasets import register_coco_instances
 from detectron2.model_zoo import get_config
 from detectron2.config import LazyConfig
 from detectron2.config.instantiate import instantiate
-from khang_net.engine.default_predictor import DefaultPredictor
+from yolof_mask.engine.default_predictor import DefaultPredictor
 
 from pycocotools.mask import encode as cvt_mask_to_rle
 from pycocotools.mask import decode as cvt_rle_to_mask
@@ -44,7 +44,7 @@ for split in ['train', 'val']:
 dataset_dicts = DatasetCatalog.get('coco2017_val')
 metadata = MetadataCatalog.get('coco2017_val')
 
-config_file = "khang_net/configs/huflit_net/huflitnet_r_50_1x.py"
+config_file = "yolof_mask/configs/yolof_mask/yolof_mask_r_50_1x.py"
 alg = config_file.split('/')[-1][:-3]
 checkpoint_file = "./output_{}/model_final.pth".format(alg)
 annot_info_file = './coco2017/coco_test_annotations/image_info_test-dev2017.json'

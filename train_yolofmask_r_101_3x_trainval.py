@@ -45,7 +45,7 @@ for split in ['train', 'val']:
 dataset_dicts = DatasetCatalog.get('coco2017_train')
 metadata = MetadataCatalog.get('coco2017_train')
 
-config_file = "khang_net/configs/yolof_mask/yolofmask_r_101_3x.py"
+config_file = "yolof_mask/configs/yolof_mask/yolofmask_r_101_3x.py"
 
 class Args(argparse.Namespace):
     config_file=config_file
