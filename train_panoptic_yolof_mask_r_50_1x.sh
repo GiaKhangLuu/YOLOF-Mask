@@ -1,0 +1,4 @@
+export MULTI_TASK_AUTOPILOT=$HOME/dev/multi_task_autopilot
+export BDD100K_IMG_DIR=dataset_zoo/bdd100k/images/10k
+
+python3 train_panoptic_yolof_mask_r_50_1x.py

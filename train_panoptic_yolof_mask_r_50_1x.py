@@ -1,0 +1,78 @@
+import sys
+
+import argparse
+import sys
+import os
+import torch, detectron2
+from pathlib import Path
+
+import detectron2
+from detectron2.utils.logger import setup_logger
+setup_logger()
+
+import numpy as np
+import os, json, cv2, random
+import matplotlib.pyplot as plt
+
+from detectron2 import model_zoo
+from detectron2.engine import DefaultPredictor
+from detectron2.config import get_cfg
+from detectron2.utils.visualizer import Visualizer
+from detectron2.data import MetadataCatalog, DatasetCatalog
+from detectron2.data.datasets.coco_panoptic import register_coco_panoptic_separated
+from detectron2.model_zoo import get_config
+from detectron2.config import LazyConfig
+from detectron2.config.instantiate import instantiate
+from detectron2.engine import default_setup
+
+from tools.lazyconfig_train_net import do_train
+
+WORK_DIR = Path(os.environ["MULTI_TASK_AUTOPILOT"])
+BDD100K_IMG_DIR = Path(os.environ["BDD100K_IMG_DIR"])
+
+#BDD100K_IMG_DIR = "dataset_zoo/bdd100k/images/10k"
+BDD100K_IMG_DIR = WORK_DIR / BDD100K_IMG_DIR
+DATASET_NAME = "bdd100k"
+DETECTRON2_ANNOT_DIR = WORK_DIR / "da-panopticfpn/datasets/bdd100k_reduced"
+
+PANOPTIC_ROOT = DETECTRON2_ANNOT_DIR / "bdd100k_panoptic_reduced"
+
+for split in ['train', 'val']:
+    d_name = DATASET_NAME + f'_{split}'
+    register_coco_panoptic_separated(
+        d_name, 
+        {}, 
+        image_root=str(BDD100K_IMG_DIR / split),
+        panoptic_root=str(PANOPTIC_ROOT / split),
+        panoptic_json=str(DETECTRON2_ANNOT_DIR / f"bdd100k_panoptic_reduced_{split}.json"),
+        sem_seg_root=str(DETECTRON2_ANNOT_DIR / f"{split}_sem_stuff"),
+        instances_json=str(DETECTRON2_ANNOT_DIR / f"bdd100k_instances_reduced_{split}.json"),
+    )
+
+STUFF_CLASSES = ["unlabeled", "dynamic", "ego vehicle", "ground", "static",  
+    "parking", "rail track", "road", "sidewalk", "bridge", 
+    "building", "fence", "garage", "guard rail", "tunnel", 
+    "wall", "banner", "billboard", "lane divider", "parking sign", 
+    "pole", "polegroup", "street light", "traffic cone",  
+    "traffic device", "traffic light", "traffic sign",  
+    "traffic sign frame", "terrain", "vegetation", "sky"]
+
+MetadataCatalog.get("bdd100k_train_separated").stuff_classes = STUFF_CLASSES
+MetadataCatalog.get("bdd100k_val_separated").stuff_classes = STUFF_CLASSES
+
+config_file = str(WORK_DIR / "YOLOF-Mask/configs/PanopticSegmentation/panoptic_yolof_mask_R_50_1x.py")
+
+class Args(argparse.Namespace):
+    config_file=config_file
+    eval_only=False
+    num_gpus=1
+    num_machines=1
+    resume=False
+
+args = Args()
+
+cfg = LazyConfig.load(str(config_file))
+
+default_setup(cfg, args)
+
+do_train(args, cfg)
