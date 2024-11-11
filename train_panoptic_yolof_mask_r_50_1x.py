@@ -56,9 +56,45 @@ STUFF_CLASSES = ["unlabeled", "dynamic", "ego vehicle", "ground", "static",
     "pole", "polegroup", "street light", "traffic cone",  
     "traffic device", "traffic light", "traffic sign",  
     "traffic sign frame", "terrain", "vegetation", "sky"]
+STUFF_DATASET_ID_TO_CONTIGUOUS_ID = {
+    0: 0, 
+    1: 1, 
+    2: 2, 
+    3: 3, 
+    4: 4, 
+    5: 5, 
+    6: 6, 
+    7: 7, 
+    8: 8, 
+    9: 9, 
+    10: 10, 
+    11: 11, 
+    12: 12, 
+    13: 13, 
+    14: 14, 
+    15: 15, 
+    16: 16, 
+    17: 17, 
+    18: 18, 
+    19: 19, 
+    20: 20, 
+    21: 21, 
+    22: 22, 
+    23: 23, 
+    24: 24, 
+    25: 25, 
+    26: 26, 
+    27: 27, 
+    28: 28, 
+    29: 29, 
+    30: 30
+}
 
 MetadataCatalog.get("bdd100k_train_separated").stuff_classes = STUFF_CLASSES
 MetadataCatalog.get("bdd100k_val_separated").stuff_classes = STUFF_CLASSES
+
+MetadataCatalog.get("bdd100k_train_separated").stuff_dataset_id_to_contiguous_id = STUFF_DATASET_ID_TO_CONTIGUOUS_ID
+MetadataCatalog.get("bdd100k_val_separated").stuff_dataset_id_to_contiguous_id = STUFF_DATASET_ID_TO_CONTIGUOUS_ID
 
 config_file = str(WORK_DIR / "YOLOF-Mask/configs/PanopticSegmentation/panoptic_yolof_mask_R_50_1x.py")
 
