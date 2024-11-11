@@ -296,7 +296,15 @@ class ResNet(Backbone):
     Implement :paper:`ResNet`.
     """
 
-    def __init__(self, stem, stages, num_classes=None, out_features=None, freeze_at=0):
+    def __init__(
+        self, 
+        stem, 
+        stages, 
+        num_classes=None, 
+        out_features=None, 
+        freeze_at=0,
+        size_divisibility=0
+    ):
         """
         Args:
             stem (nn.Module): a stem module
@@ -363,6 +371,12 @@ class ResNet(Backbone):
         for out_feature in self._out_features:
             assert out_feature in children, "Available children: {}".format(", ".join(children))
         self.freeze(freeze_at)
+
+        self._size_divisibility = size_divisibility
+
+    @property
+    def size_divisibility(self):
+        return self._size_divisibility
 
     def forward(self, x):
         """
