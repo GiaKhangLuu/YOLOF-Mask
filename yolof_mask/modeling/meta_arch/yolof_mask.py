@@ -53,23 +53,23 @@ def select_foreground_proposals(
         fg_selection_masks.append(fg_selection_mask)
     return fg_proposals, fg_selection_masks
 
-class yolof_mask(nn.Module):
+class YOLOF_Mask(YOLOF):
     def __init__(
         self,
         *,
-        yolof: YOLOF,
         pooler: ROIPooler,
         mask_head: MaskRCNNConvUpsampleHead,
         proposal_matcher: Matcher,
         num_classes: int,
         batch_size_per_image: int,
         positive_fraction: int,
-        pixel_mean: Tuple[float],
-        pixel_std: Tuple[float],
-        input_format: Optional[str] = None,
-        vis_period: int = 0,
+        #pixel_mean: Tuple[float],
+        #pixel_std: Tuple[float],
+        #input_format: Optional[str] = None,
+        #vis_period: int = 0,
         train_yolof = True,
-        yolof_weight = None
+        yolof_weight = None,
+        **kwargs
     ):
         """
         Args:
@@ -81,39 +81,31 @@ class yolof_mask(nn.Module):
             input_format: describe the meaning of channels of input. Needed by visualization
             vis_period: the period to run visualization. Set to 0 to disable.
         """
-        super().__init__()
-        self.yolof = yolof
+        super().__init__(num_classes=num_classes, **kwargs)
         self.pooler = pooler
         self.mask_head = mask_head
         self.proposal_matcher = proposal_matcher
 
         self.train_yolof = train_yolof
-        self.yolof_weight = yolof_weight
+        self_weight = yolof_weight
 
-        self.input_format = input_format
-        self.vis_period = vis_period
-        if vis_period > 0:
-            assert input_format is not None, "input_format is required for visualization!"
+        #self.input_format = input_format
+        #self.vis_period = vis_period
+        if self.vis_period > 0:
+            assert self.input_format is not None, "input_format is required for visualization!"
 
-        self.num_classes = num_classes
-        self.batch_size_per_image =  batch_size_per_image
-        self.positive_fraction =  positive_fraction
+        self.batch_size_per_image = batch_size_per_image
+        self.positive_fraction = positive_fraction
 
-        self.register_buffer("pixel_mean", torch.tensor(pixel_mean).view(-1, 1, 1), False)
-        self.register_buffer("pixel_std", torch.tensor(pixel_std).view(-1, 1, 1), False)
+        #self.register_buffer("pixel_mean", torch.tensor(pixel_mean).view(-1, 1, 1), False)
+        #self.register_buffer("pixel_std", torch.tensor(pixel_std).view(-1, 1, 1), False)
         assert (
             self.pixel_mean.shape == self.pixel_std.shape
         ), f"{self.pixel_mean} and {self.pixel_std} have different shapes!"
-
-        if yolof_weight:
-            DetectionCheckpointer(self.yolof).load(self.yolof_weight)  # load a file, usually from cfg.MODEL.WEIGHTS
-
-    @property
-    def device(self):
-        return self.pixel_mean.device
-
-    def _move_to_current_device(self, x):
-        return move_device_like(x, self.pixel_mean)
+        
+        # TODO: Check this function later, assign weight for yolof
+        #if yolof_weight:
+            #DetectionCheckpointer(self).load(self_weight)  # load a file, usually from cfg.MODEL.WEIGHTS
 
     def visualize_training(self, batched_inputs, proposals):
         """
@@ -174,18 +166,12 @@ class yolof_mask(nn.Module):
                 "pred_boxes", "pred_classes", "scores", "pred_masks"
         """
         images = self.preprocess_image(batched_inputs)
-        #if "instances" in batched_inputs[0]:
-            #gt_instances = [x["instances"].to(self.device) for x in batched_inputs]
-        #else:
-            #gt_instances = None
-
-        #features = self.backbone(images.tensor)
-        features = self.yolof.backbone(images.tensor)
+        features = self.backbone(images.tensor)
 
         # Temporarily hard code this feature out
-        if isinstance(self.yolof.backbone, VoVNet):
+        if isinstance(self.backbone, VoVNet):
             features = features['stage5']
-        elif isinstance(self.yolof.backbone, ResNet):
+        elif isinstance(self.backbone, ResNet):
             features = features['res5']
         else:
             print("Invalid type of backbone")
@@ -193,9 +179,9 @@ class yolof_mask(nn.Module):
 
         # Pass `p5` (output from encoder) to roi pooler
         # Temporarily hard code this now, haven't modify in config file
-        features_p5 = self.yolof.encoder(features)
-        box_cls, box_delta = self.yolof.decoder(features_p5)
-        anchors = self.yolof.anchor_generator([features_p5])
+        features_p5 = self.encoder(features)
+        box_cls, box_delta = self.decoder(features_p5)
+        anchors = self.anchor_generator([features_p5])
 
         if self.training:
             assert not torch.jit.is_scripting(), "Not supported"
@@ -204,17 +190,17 @@ class yolof_mask(nn.Module):
 
             if self.train_yolof:
                 # Proposals
-                pred_logits = [permute_to_N_HWA_K(box_cls, self.yolof.num_classes)]
+                pred_logits = [permute_to_N_HWA_K(box_cls, self.num_classes)]
                 pred_anchor_deltas = [permute_to_N_HWA_K(box_delta, 4)]
 
-                indices = self.yolof.get_ground_truth(anchors, pred_anchor_deltas, gt_instances)
-                proposal_loss = self.yolof.losses(indices, gt_instances, anchors,
-                                                pred_logits, pred_anchor_deltas)
+                indices = self.get_ground_truth(anchors, pred_anchor_deltas, gt_instances)
+                proposal_loss = self.losses(indices, gt_instances, anchors,
+                    pred_logits, pred_anchor_deltas)
             else:
                 proposal_loss = {}
 
             # Mask
-            proposals = self.yolof.inference([box_cls], [box_delta], anchors, images.image_sizes)
+            proposals = self.inference([box_cls], [box_delta], anchors, images.image_sizes)
             proposals = self.label_and_sample_proposals(proposals, gt_instances) 
 
             # TODO: Need to change this logit, we dont need negative proposals so 
@@ -237,7 +223,7 @@ class yolof_mask(nn.Module):
             losses.update(mask_loss)
             return losses
         else:
-            proposals = self.yolof.inference([box_cls], [box_delta], anchors, images.image_sizes)
+            proposals = self.inference([box_cls], [box_delta], anchors, images.image_sizes)
             proposal_boxes = [x.pred_boxes for x in proposals]
             box_features = self.pooler([features_p5], proposal_boxes)
             results = self.mask_head(box_features, proposals)
@@ -245,19 +231,6 @@ class yolof_mask(nn.Module):
             assert not torch.jit.is_scripting(), "Scripting is not supported for postprocess."
             return yolof_mask._postprocess(results, batched_inputs, images.image_sizes)
 
-    def preprocess_image(self, batched_inputs: List[Dict[str, torch.Tensor]]):
-        """
-        Normalize, pad and batch the input images.
-        """
-        images = [self._move_to_current_device(x["image"]) for x in batched_inputs]
-        images = [(x - self.pixel_mean) / self.pixel_std for x in images]
-        images = ImageList.from_tensors(
-            images,
-            self.yolof.backbone.size_divisibility,
-            padding_constraints=self.yolof.backbone.padding_constraints,
-        )
-        return images
-    
     @staticmethod
     def _postprocess(instances, batched_inputs: List[Dict[str, torch.Tensor]], image_sizes):
         """
