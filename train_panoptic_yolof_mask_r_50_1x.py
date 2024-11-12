@@ -30,7 +30,6 @@ from tools.lazyconfig_train_net import do_train
 WORK_DIR = Path(os.environ["MULTI_TASK_AUTOPILOT"])
 BDD100K_IMG_DIR = Path(os.environ["BDD100K_IMG_DIR"])
 
-#BDD100K_IMG_DIR = "dataset_zoo/bdd100k/images/10k"
 BDD100K_IMG_DIR = WORK_DIR / BDD100K_IMG_DIR
 DATASET_NAME = "bdd100k"
 DETECTRON2_ANNOT_DIR = WORK_DIR / "da-panopticfpn/datasets/bdd100k_reduced"

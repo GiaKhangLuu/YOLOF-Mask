@@ -20,9 +20,9 @@ from detectron2.modeling.matcher import Matcher
 from detectron2.checkpoint import DetectionCheckpointer
 
 from yolof_mask.modeling.backbone import ResNet, VoVNet
-from .yolof_mask import yolof_mask, select_foreground_proposals
+from .yolof_mask import YOLOF_Mask, select_foreground_proposals
 
-class Panoptic_YOLOF_Mask(yolof_mask):
+class Panoptic_YOLOF_Mask(YOLOF_Mask):
     def __init__(
         self,
         *,
@@ -79,23 +79,23 @@ class Panoptic_YOLOF_Mask(yolof_mask):
             return self.inference(batched_inputs)
         images = self.preprocess_image(batched_inputs)
 
-        features = self.yolof.backbone(images.tensor)
+        features = self.backbone(images.tensor)
 
-        if isinstance(self.yolof.backbone, ResNet):
+        if isinstance(self.backbone, ResNet):
             features = features['res5']
         else:
             print("Invalid type of backbone")
             return
 
-        features_p5 = self.yolof.encoder(features)
+        features_p5 = self.encoder(features)
 
         assert "sem_seg" in batched_inputs[0], "Semantic segmenations are missing in training!"
         gt_sem_seg = [x["sem_seg"].to(self.device) for x in batched_inputs]
         gt_sem_seg = ImageList.from_tensors(
             gt_sem_seg,
-            self.yolof.backbone.size_divisibility,
+            self.backbone.size_divisibility,
             self.sem_seg_head.ignore_value,
-            self.yolof.backbone.padding_constraints,
+            self.backbone.padding_constraints,
         ).tensor
 
         _, sem_seg_losses = self.sem_seg_head(features_p5, gt_sem_seg)
@@ -103,20 +103,20 @@ class Panoptic_YOLOF_Mask(yolof_mask):
         assert "instances" in batched_inputs[0], "Instance annotations are missing in training!"
         gt_instances = [x["instances"].to(self.device) for x in batched_inputs]
 
-        box_cls, box_delta = self.yolof.decoder(features_p5)
-        anchors = self.yolof.anchor_generator([features_p5])
+        box_cls, box_delta = self.decoder(features_p5)
+        anchors = self.anchor_generator([features_p5])
 
         # Proposals
-        pred_logits = [permute_to_N_HWA_K(box_cls, self.yolof.num_classes)]
+        pred_logits = [permute_to_N_HWA_K(box_cls, self.num_classes)]
         pred_anchor_deltas = [permute_to_N_HWA_K(box_delta, 4)]
 
-        indices = self.yolof.get_ground_truth(anchors, pred_anchor_deltas, gt_instances)
-        proposal_losses = self.yolof.losses(
+        indices = self.get_ground_truth(anchors, pred_anchor_deltas, gt_instances)
+        proposal_losses = self.losses(
             indices, gt_instances, anchors, pred_logits, pred_anchor_deltas
         )
 
         # Mask
-        proposals = self.yolof.inference([box_cls], [box_delta], anchors, images.image_sizes)
+        proposals = super().inference([box_cls], [box_delta], anchors, images.image_sizes)
         proposals = self.label_and_sample_proposals(proposals, gt_instances) 
 
         # TODO: Need to change this logit, we dont need negative proposals so 
@@ -154,20 +154,20 @@ class Panoptic_YOLOF_Mask(yolof_mask):
         """
 
         images = self.preprocess_image(batched_inputs)
-        features = self.yolof.backbone(images.tensor)
+        features = self.backbone(images.tensor)
 
-        if isinstance(self.yolof.backbone, ResNet):
+        if isinstance(self.backbone, ResNet):
             features = features['res5']
         else:
             print("Invalid type of backbone")
             return
 
-        features_p5 = self.yolof.encoder(features)
-        box_cls, box_delta = self.yolof.decoder(features_p5)
-        anchors = self.yolof.anchor_generator([features_p5])
+        features_p5 = self.encoder(features)
+        box_cls, box_delta = self.decoder(features_p5)
+        anchors = self.anchor_generator([features_p5])
 
         sem_seg_results, _ = self.sem_seg_head(features_p5, None)
-        proposals = self.yolof.inference([box_cls], [box_delta], anchors, images.image_sizes)
+        proposals = super().inference([box_cls], [box_delta], anchors, images.image_sizes)
         proposal_boxes = [x.pred_boxes for x in proposals]
         box_features = self.pooler([features_p5], proposal_boxes)
         detector_results = self.mask_head(box_features, proposals)
