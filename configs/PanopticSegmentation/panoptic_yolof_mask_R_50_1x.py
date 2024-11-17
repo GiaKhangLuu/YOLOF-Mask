@@ -20,7 +20,6 @@ train['init_checkpoint'] = "detectron2://ImageNetPretrained/MSRA/R-50.pkl"
 train['device'] = 'cuda:0'
 
 
-# TODO: make yolof_mask is an extended classes of yolof
 model.num_classes = 10
 model.backbone.freeze_at = 2  
 

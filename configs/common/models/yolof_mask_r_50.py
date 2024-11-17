@@ -37,7 +37,4 @@ model.proposal_matcher=L(Matcher)(
 model.num_classes = NUM_CLASSES
 model.batch_size_per_image = 512
 model.positive_fraction = 0.25
-#model.pixel_mean = constants['imagenet_bgr256_mean']
-#model.pixel_std = constants['imagenet_bgr256_std']
-#model.input_format = "BGR"
 model.train_yolof = True

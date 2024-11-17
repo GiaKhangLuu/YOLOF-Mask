@@ -1,28 +1,14 @@
-import sys
-
 import argparse
-import sys
-import os
-import torch, detectron2
+import os 
+import detectron2
 from pathlib import Path
 
-import detectron2
 from detectron2.utils.logger import setup_logger
 setup_logger()
 
-import numpy as np
-import os, json, cv2, random
-import matplotlib.pyplot as plt
-
-from detectron2 import model_zoo
-from detectron2.engine import DefaultPredictor
-from detectron2.config import get_cfg
-from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
-from detectron2.data.datasets.coco_panoptic import register_coco_panoptic_separated
-from detectron2.model_zoo import get_config
+from detectron2.data.datasets.coco_panoptic import register_coco_panoptic_separated, register_coco_instances
 from detectron2.config import LazyConfig
-from detectron2.config.instantiate import instantiate
 from detectron2.engine import default_setup
 
 from tools.lazyconfig_train_net import do_train
