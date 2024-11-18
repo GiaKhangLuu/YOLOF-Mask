@@ -1,5 +1,4 @@
 from detectron2.config import LazyCall as L
-from detectron2.config import LazyCall as L
 from detectron2.layers import ShapeSpec
 from detectron2.model_zoo.configs.common.data.constants import constants
 
@@ -20,6 +19,7 @@ model=L(YOLOF)(
             norm="FrozenBN",
             block_class=SEBlock
         ),
+        out_features=["res5"],
         size_divisibility=32
     ),
     encoder=L(DilatedEncoder)(

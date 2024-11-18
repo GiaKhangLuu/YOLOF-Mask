@@ -14,13 +14,15 @@ dataloader.evaluator.dataset_name = 'bdd100k_val'
 dataloader.train.dataset.names = ('bdd100k_train',)
 dataloader.test.dataset.names = 'bdd100k_val'
 
-train['output_dir'] = "./output/yolof_mask_R_50_1x"
+train['output_dir'] = "./output/yolof_mask_R_50_3x"
 train['max_iter'] = 90000 * 3 * default_batch_size // batch_size
 train['eval_period'] = 5000 * 3 * default_batch_size // batch_size
 train['init_checkpoint'] = "detectron2://ImageNetPretrained/MSRA/R-50.pkl"
 train['device'] = 'cuda:0'
 
-model.num_classes = 8
+NUM_CLASSES = 8
+model.num_classes = NUM_CLASSES
+model.mask_head.num_classes = NUM_CLASSES
 model.backbone.freeze_at = 2
 
 optimizer.params.base_lr = 0.01

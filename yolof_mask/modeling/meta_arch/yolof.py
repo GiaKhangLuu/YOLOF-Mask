@@ -58,6 +58,9 @@ class YOLOF(nn.Module):
         self.encoder = encoder
         self.decoder = decoder
 
+        if len(self.backbone._out_features) > 1:
+            raise Exception("YOLOF's backbone just outputs feature maps of one stage only!!!")
+
         self.num_classes = num_classes
 
         # Anchors
@@ -126,19 +129,10 @@ class YOLOF(nn.Module):
         """
         images = self.preprocess_image(batched_inputs)
         features = self.backbone(images.tensor)
+        features = features[self.backbone._out_features[-1]]
 
-        # Temporarily hard code this feature out
-        if isinstance(self.backbone, VoVNet):
-            features = features['stage5']
-        elif isinstance(self.backbone, ResNet):
-            features = features['res5']
-        else:
-            print("Invalid type of backbone")
-            return
-
-        features = [features]
-        box_cls, box_delta = self.decoder(self.encoder(features[0]))
-        anchors = self.anchor_generator(features)
+        box_cls, box_delta = self.decoder(self.encoder(features))
+        anchors = self.anchor_generator([features])
         pred_logits = [permute_to_N_HWA_K(box_cls, self.num_classes)]
         pred_anchor_deltas = [permute_to_N_HWA_K(box_delta, 4)]
 

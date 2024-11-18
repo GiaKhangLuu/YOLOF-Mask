@@ -63,10 +63,6 @@ class YOLOF_Mask(YOLOF):
         num_classes: int,
         batch_size_per_image: int,
         positive_fraction: int,
-        #pixel_mean: Tuple[float],
-        #pixel_std: Tuple[float],
-        #input_format: Optional[str] = None,
-        #vis_period: int = 0,
         train_yolof = True,
         yolof_weight = None,
         **kwargs
@@ -89,16 +85,12 @@ class YOLOF_Mask(YOLOF):
         self.train_yolof = train_yolof
         self_weight = yolof_weight
 
-        #self.input_format = input_format
-        #self.vis_period = vis_period
         if self.vis_period > 0:
             assert self.input_format is not None, "input_format is required for visualization!"
 
         self.batch_size_per_image = batch_size_per_image
         self.positive_fraction = positive_fraction
 
-        #self.register_buffer("pixel_mean", torch.tensor(pixel_mean).view(-1, 1, 1), False)
-        #self.register_buffer("pixel_std", torch.tensor(pixel_std).view(-1, 1, 1), False)
         assert (
             self.pixel_mean.shape == self.pixel_std.shape
         ), f"{self.pixel_mean} and {self.pixel_std} have different shapes!"
@@ -167,15 +159,7 @@ class YOLOF_Mask(YOLOF):
         """
         images = self.preprocess_image(batched_inputs)
         features = self.backbone(images.tensor)
-
-        # Temporarily hard code this feature out
-        if isinstance(self.backbone, VoVNet):
-            features = features['stage5']
-        elif isinstance(self.backbone, ResNet):
-            features = features['res5']
-        else:
-            print("Invalid type of backbone")
-            return
+        features = features[self.backbone._out_features[-1]]
 
         # Pass `p5` (output from encoder) to roi pooler
         # Temporarily hard code this now, haven't modify in config file
@@ -229,7 +213,7 @@ class YOLOF_Mask(YOLOF):
             results = self.mask_head(box_features, proposals)
 
             assert not torch.jit.is_scripting(), "Scripting is not supported for postprocess."
-            return yolof_mask._postprocess(results, batched_inputs, images.image_sizes)
+            return YOLOF_Mask._postprocess(results, batched_inputs, images.image_sizes)
 
     @staticmethod
     def _postprocess(instances, batched_inputs: List[Dict[str, torch.Tensor]], image_sizes):
