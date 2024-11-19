@@ -14,13 +14,13 @@ from detectron2.engine import default_setup
 
 from tools.lazyconfig_train_net import do_train
 
-def main(
-    config_path, 
-    task,
-    dataset_name,
-    img_dir,
-    annot_dir
-):
+def main(**kwargs):
+    config_path = kwargs.get("config")
+    task = kwargs.get("task")
+    dataset_name = kwargs.get("dataset_name")
+    img_dir = kwargs.get("image_dir")
+    annot_dir = kwargs.get("annot_dir")
+    is_resume = kwargs.get("resume")
 
     assert dataset_name in ["bdd100k"]
     assert task in ["ins_seg", "panoptic"]
@@ -48,7 +48,7 @@ def main(
         eval_only=False
         num_gpus=1
         num_machines=1
-        resume=False
+        resume=is_resume
 
     args = Args()
 
@@ -93,6 +93,11 @@ if __name__ == "__main__":
         required=True,
         help="Name of data to train."
     )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Flag to resume training."
+    )
 
     args = parser.parse_args()
-    main(args.config, args.task, args.dataset_name, args.image_dir, args.annot_dir)
+    main(**vars(args))

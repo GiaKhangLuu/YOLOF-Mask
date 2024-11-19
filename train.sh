@@ -10,4 +10,5 @@ python3 train.py -c ${CONFIG_FILE} \
  --image_dir ${IMG_DIR} \
  --annot_dir ${ANNOT_DIR} \
  --task ${TASK} \
- --dataset_name ${DATASET_NAME}
+ --dataset_name ${DATASET_NAME} \
+ --resume
