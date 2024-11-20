@@ -12,7 +12,7 @@ from detectron2.data.datasets import register_coco_instances
 from detectron2.config import LazyConfig
 from detectron2.engine import default_setup
 
-from tools.lazyconfig_train_net import do_train
+from yolof_mask.tools.lazyconfig_train_net import do_train
 
 def main(**kwargs):
     config_path = kwargs.get("config")
