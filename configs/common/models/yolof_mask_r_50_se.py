@@ -8,6 +8,7 @@ from detectron2.modeling.matcher import Matcher
 
 from yolof_mask.modeling.meta_arch.yolof_mask import YOLOF_Mask
 from yolof_mask.modeling.mask_head import MaskRCNNConvUpsampleHead
+from yolof_mask.modeling.attention.spatial_attention import SpatialAttention
 
 from .yolof_r_50_se import model 
 
@@ -29,7 +30,10 @@ model.mask_head = L(MaskRCNNConvUpsampleHead)(
         height=14
     ),
     conv_dims=[256, 256, 256, 256, 256, 256, 256],
-    num_classes=NUM_CLASSES
+    num_classes=NUM_CLASSES,
+    spatial_attention=L(SpatialAttention)(
+        kernel_size=7
+    )
 )
 model.proposal_matcher=L(Matcher)(
     thresholds=[0.5], labels=[0, 1], allow_low_quality_matches=False

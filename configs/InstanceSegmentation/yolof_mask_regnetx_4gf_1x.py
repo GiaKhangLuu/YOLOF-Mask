@@ -5,7 +5,7 @@ from ..common.data.coco import dataloader
 from ..common.models.yolof_mask_regnetx_4gf import model
 
 default_batch_size = 16
-batch_size = 8
+batch_size = 4
 
 dataloader.train.mapper.use_instance_mask = True
 dataloader.train.mapper.instance_mask_format = "bitmask"
