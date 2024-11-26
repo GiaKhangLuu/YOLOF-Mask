@@ -13,9 +13,7 @@ lr_multiplier = default_X_scheduler(x_scheduler, batch_size_16=False, batch_size
 dataloader.train.mapper.use_instance_mask = True
 dataloader.train.mapper.instance_mask_format = "bitmask"
 dataloader.train.total_batch_size = batch_size
-dataloader.evaluator.dataset_name = 'bdd100k_val'
-dataloader.train.dataset.names = ('bdd100k_train',)
-dataloader.test.dataset.names = 'bdd100k_val'
+dataloader.test.total_batch_size = batch_size
 
 train['output_dir'] = "./output/yolof_mask_RegNetX_4gf_3x"
 train['max_iter'] = 90000 * x_scheduler * default_batch_size // batch_size
