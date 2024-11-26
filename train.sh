@@ -2,8 +2,8 @@ WORK_DIR=$(pwd)
 DATASET_NAME=bdd100k
 TASK=ins_seg
 
-IMG_DIR=${WORK_DIR}/${DATASET_NAME}/images/10k
-ANNOT_DIR=${WORK_DIR}/${DATASET_NAME}/labels_coco/${TASK}
+IMG_DIR=${WORK_DIR}/dataset_zoo/${DATASET_NAME}/images/10k
+ANNOT_DIR=${WORK_DIR}/dataset_zoo/${DATASET_NAME}/labels_coco/${TASK}
 CONFIG_FILE=${WORK_DIR}/configs/InstanceSegmentation/yolof_mask_ConvNeXt_T_1x.py
 
 python3 train.py -c ${CONFIG_FILE} \

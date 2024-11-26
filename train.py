@@ -6,7 +6,6 @@ from pathlib import Path
 from detectron2.utils.logger import setup_logger
 setup_logger()
 
-from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.data.datasets.coco_panoptic import register_coco_panoptic_separated 
 from detectron2.data.datasets import register_coco_instances
 from detectron2.config import LazyConfig
@@ -54,11 +53,16 @@ def main(**kwargs):
 
     cfg = LazyConfig.load(config_path)
 
+    cfg.dataloader.evaluator.dataset_name = f'{dataset_name}_val'
+    cfg.dataloader.train.dataset.names = (f'{dataset_name}_train',)
+    cfg.dataloader.test.dataset.names = f'{dataset_name}_val'
+
     default_setup(cfg, args)
 
     do_train(args, cfg)
 
 if __name__ == "__main__":
+    # TODO: Add `num_gpus` options
     parser = argparse.ArgumentParser(description="Train a model using a configuration file.")
     parser.add_argument(
         "-c", 
