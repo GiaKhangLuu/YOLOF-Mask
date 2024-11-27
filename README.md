@@ -14,7 +14,9 @@ We are training!!!
 
 ## Installation
 
-Check out `./requirements.txt` file.
+```
+conda env create -f environment.yml
+```
 
 ## Dataset zoo
 
