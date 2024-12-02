@@ -10,7 +10,6 @@ We are training!!!
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | [ResNet_50_SE](./configs/InstanceSegmentation/yolof_mask_R_50_SE_3x.py) | 3x | 22.0 | 17.57 | ... | ... | [pth](https://drive.google.com/file/d/1bEfqB9SqwyMNAWOXQALvWY5ZFVnr0TY8/view?usp=drive_link) |
 | [RegNetX_4gf](./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_3x.py) | 3x | 24.39 | 20.02 | ... | ... | [pth](https://drive.google.com/file/d/1MQC-nyKCa3C9Pz7p4MFE8cbGJuBynHKT/view?usp=drive_link) | 
-||
 
 ## Installation
 
@@ -28,7 +27,6 @@ We currently support two datasets `BDD100K` and `COCO2017`. Download the dataset
 |:---:|:---:|
 | BDD100K | [link](https://drive.google.com/file/d/1U9VjD8gRFB30nh-l85cUQyRdbpsypish/view?usp=drive_link) |
 | COCO2017 | [link](https://drive.google.com/file/d/1VeqhcRm4aZYiS4bWOqLtmq0pQNAkxZHR/view?usp=drive_link) |
-||
 
 ## Training 
 

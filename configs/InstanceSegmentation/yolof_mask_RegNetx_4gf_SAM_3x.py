@@ -28,6 +28,6 @@ model.num_classes = NUM_CLASSES
 model.mask_head.num_classes = NUM_CLASSES
 model.backbone.freeze_at = 2
 
-optimizer.params.base_lr = 0.01
-optimizer.lr = 0.01
-optimizer.weight_decay = 5e-5
+optimizer.params.base_lr = 0.01 * batch_size / default_batch_size
+optimizer.lr = 0.01 * batch_size / default_batch_size
+optimizer.weight_decay = 5e-5 * batch_size / default_batch_size

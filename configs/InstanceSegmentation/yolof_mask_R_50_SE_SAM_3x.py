@@ -25,5 +25,5 @@ NUM_CLASSES = 8
 model.num_classes = NUM_CLASSES
 model.mask_head.num_classes = NUM_CLASSES
 
-optimizer.params.base_lr = 0.01
-optimizer.lr = 0.01
+optimizer.params.base_lr = 0.01 * batch_size / default_batch_size
+optimizer.lr = 0.01 * batch_size / default_batch_size

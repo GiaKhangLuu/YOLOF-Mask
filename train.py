@@ -21,13 +21,18 @@ def main(**kwargs):
     annot_dir = kwargs.get("annot_dir")
     is_resume = kwargs.get("resume")
 
-    assert dataset_name in ["bdd100k"]
+    assert dataset_name in ["bdd100k", "coco2017"]
     assert task in ["ins_seg", "panoptic"]
 
     for split in ["train", "val"]:
         d_name = dataset_name + f"_{split}"
-        img_phase_dir = os.path.join(img_dir, split)
-        annot_phase_path = os.path.join(annot_dir, f"ins_seg_{split}_coco.json")
+        if dataset_name == "bdd100k":
+            img_phase_dir = os.path.join(img_dir, split)
+            annot_phase_path = os.path.join(annot_dir, f"ins_seg_{split}_coco.json")
+        elif dataset_name == "coco2017":
+            img_phase_dir = os.path.join(img_dir, f"{split}2017")
+            annot_phase_path = os.path.join(annot_dir, f"instances_{split}2017.json")
+
 
         if task == "ins_seg":
             register_coco_instances(
