@@ -9,3 +9,9 @@ results
 *.json
 
 dataset_zoo
+
+*.sh
+
+test
+
+demo
