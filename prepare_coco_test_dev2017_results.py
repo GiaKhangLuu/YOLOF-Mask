@@ -1,74 +1,54 @@
-import sys
-#sys.path.insert(0, './detectron2')
-
-# Some basic setup:
-# Setup detectron2 logger
-import detectron2
-from detectron2.utils.logger import setup_logger
-setup_logger()
-
-# import some common libraries
 import numpy as np
 import os, json, cv2, random
-import matplotlib.pyplot as plt
-import torch
 import json
 import cv2
 import os
 from tqdm import tqdm
 
-# import some common detectron2 utilities
-from detectron2 import model_zoo
-from detectron2.config import get_cfg
-from detectron2.utils.visualizer import Visualizer
-from detectron2.data import MetadataCatalog, DatasetCatalog
-from detectron2.data.datasets import register_coco_instances
-from detectron2.model_zoo import get_config
 from detectron2.config import LazyConfig
-from detectron2.config.instantiate import instantiate
-from yolof_mask.engine.default_predictor import DefaultPredictor
+from detectron2.data.datasets import register_coco_instances
+from detectron2.data import MetadataCatalog, DatasetCatalog
 
 from pycocotools.mask import encode as cvt_mask_to_rle
 from pycocotools.mask import decode as cvt_rle_to_mask
 
+from yolof_mask.engine.default_predictor import DefaultPredictor
+
 dataset = 'coco2017'
-annot_dir = './coco2017/annotations'
-imgs_dir = './coco2017/{}2017'
+annot_path = "dataset_zoo/coco2017/coco_test_annotations/coco_test_annotations/image_info_test-dev2017.json"
+img_dir = "dataset_zoo/coco2017/coco_test_dev2017/coco_test2017"
 
-for split in ['train', 'val']:
-    annot_path = os.path.join(annot_dir, f'instances_{split}2017.json')
-    d_name = dataset + f'_{split}'
-    register_coco_instances(d_name, {}, annot_path, imgs_dir.format(split))
+register_coco_instances(
+    "coco_test_dev2017", 
+    {}, 
+    annot_path, 
+    img_dir)
 
-# Load dataset
-dataset_dicts = DatasetCatalog.get('coco2017_val')
-metadata = MetadataCatalog.get('coco2017_val')
+dataset_dicts = DatasetCatalog.get('coco_test_dev2017')
+metadata = MetadataCatalog.get('coco_test_dev2017')
 
-config_file = "yolof_mask/configs/yolof_mask/yolof_mask_r_50_1x.py"
-alg = config_file.split('/')[-1][:-3]
-checkpoint_file = "./output_{}/model_final.pth".format(alg)
-annot_info_file = './coco2017/coco_test_annotations/image_info_test-dev2017.json'
-img_dir = './coco2017/coco_test2017'
-results_file = './detections_test-dev2017_r501x_results.json'
+config_file = "./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_3x.py"
+checkpoint_file = "./output/coco/yolof_mask_RegNetX_4gf_3x/model_best.pth"
+annot_info_file = annot_path
+results_file = './output/coco_test_infer/detections_test-dev2017_regnetx_4gf_3x_results.json'
 
 cfg = LazyConfig.load(config_file)
-cfg.train.device = 'cuda:3'
-cfg.dataloader.evaluator.dataset_name = 'coco2017_val'
-cfg.dataloader.train.dataset.names = 'coco2017_train'
-cfg.dataloader.test.dataset.names = 'coco2017_val'
-cfg.dataloader.train.total_batch_size = 16
+cfg.train.device = 'cuda:0'
+cfg.dataloader.evaluator.dataset_name = 'coco_test_dev2017'
+cfg.dataloader.train.dataset.names = 'coco_test_dev2017'
+cfg.dataloader.test.dataset.names = 'coco_test_dev2017'
+cfg.dataloader.train.total_batch_size = 1
 
-cfg.model.num_classes = 80
-cfg.model.yolof.num_classes = 80
-cfg.model.mask_head.num_classes = 80
-
+NUM_CLASSES = 80
+cfg.model.num_classes = NUM_CLASSES
+cfg.model.mask_head.num_classes = NUM_CLASSES
 cfg.train.init_checkpoint = checkpoint_file
 
 predictor = DefaultPredictor(cfg)
 predictor.model.to(cfg.train.device)
 
-coco_ids = list(MetadataCatalog.get("coco2017_val").thing_dataset_id_to_contiguous_id.keys())
-model_ids = list(MetadataCatalog.get("coco2017_val").thing_dataset_id_to_contiguous_id.values())
+coco_ids = list(MetadataCatalog.get("coco_test_dev2017").thing_dataset_id_to_contiguous_id.keys())
+model_ids = list(MetadataCatalog.get("coco_test_dev2017").thing_dataset_id_to_contiguous_id.values())
 
 if os.path.exists(results_file):
     os.remove(results_file)
@@ -89,7 +69,7 @@ def convert_bbox_xyxy_to_xywh(x1, y1, x2, y2):
     h = y2 - y1
     return [x1, y1, w, h]
 
-with open(results_file, 'a') as file:
+with open(results_file, 'w') as file:
     for i, image in enumerate(tqdm(annots['images'])):
 
         if i == 0:

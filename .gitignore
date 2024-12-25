@@ -12,6 +12,6 @@ dataset_zoo
 
 *.sh
 
-test
+test/*.ipynb
 
 demo

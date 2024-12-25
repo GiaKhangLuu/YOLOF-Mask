@@ -1,15 +1,30 @@
 # YOLOF Mask
 
+This model trained and evaluted on two public datasets: COCO2017 and BDD100KA
+
+## Result sample
+
+BDD100K result
+![Image Description 1](./asset/bdd100k_output.jpg)
+
+COCO2017 result
+![Image Description 2](./asset/coco_test_dev2017.png)
+
 ## Instance segmentation results on COCO2017 test
 
-We are training!!!
+| Config | Lr sched | Mask mAP (%) | #params (m) | download |
+|:---:|:---:|:---:|:---:|:---:|
+| [ResNet_50](./configs/InstanceSegmentation/yolof_mask_R_50_3x.py) | 3x | 33 | 46.8 | [pth](https://drive.google.com/file/d/1rHY5007rUm_QyZKnnVUVrRfXCffLSfR6/view?usp=drive_link) |
+| [ResNet_50_SE_SAM](./configs/InstanceSegmentation/yolof_mask_R_50_SE_SAM_3x.py) | 3x | 35 | 49.3 | [pth](https://drive.google.com/file/d/139dUcXqmjrGCCXedviO19sFUy55TQJRB/view?usp=drive_link) |
+| [RegNetX_4gf](./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_3x.py) | 3x | 35.5 | 43.7 | [pth](https://drive.google.com/file/d/1e72alvpqnqt2WFTdhxQpLxPL8_7N7Vs3/view?usp=drive_link) |
+| [RegNetX_4gf_SAM](./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_SAM_3x.py) | 3x | 36 | 43.7 | [pth](https://drive.google.com/file/d/1ZyvYjnQjFgGqVt4aZCdDwYmxco4C1Tsj/view?usp=drive_link) |
+| [ConvNeXt_T](./configs/InstanceSegmentation/yolof_mask_ConvNeXt_T_3x.py) | 3x | training | 50.5 | [pth]() |
+| [ConvNeXt_T_SAM](./configs/InstanceSegmentation/yolof_mask_ConvNeXt_T_SAM_3x.py) | 3x | 35 | 50.5 | [pth](https://drive.google.com/file/d/1aLSYaFoTdR8sDPGVk2ftBGCyg7XcWBs7/view?usp=drive_link) |
 
 ## Instance segmentation results on BDD100K val
 
-| Config | Lr sched | Box mAP | Mask mAP | #params | FLOPs | download |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| [ResNet_50_SE](./configs/InstanceSegmentation/yolof_mask_R_50_SE_3x.py) | 3x | 22.0 | 17.57 | ... | ... | [pth](https://drive.google.com/file/d/1bEfqB9SqwyMNAWOXQALvWY5ZFVnr0TY8/view?usp=drive_link) |
-| [RegNetX_4gf](./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_3x.py) | 3x | 24.39 | 20.02 | ... | ... | [pth](https://drive.google.com/file/d/1MQC-nyKCa3C9Pz7p4MFE8cbGJuBynHKT/view?usp=drive_link) | 
+We are training!!!
+
 
 ## Installation
 
