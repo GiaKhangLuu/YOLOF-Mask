@@ -50,7 +50,7 @@ def main(**kwargs):
     class Args(argparse.Namespace):
         config_file=config_path
         eval_only=False
-        num_gpus=1
+        num_gpus=kwargs.get("num_gpus", 1)
         num_machines=1
         resume=is_resume
 
@@ -106,6 +106,12 @@ if __name__ == "__main__":
         "--resume",
         action="store_true",
         help="Flag to resume training."
+    )
+    parser.add_argument(
+        "--num_gpus",
+        type=int,
+        default=1,
+        help="Number of GPUs to use."
     )
 
     args = parser.parse_args()

@@ -6,7 +6,7 @@ from ..common.data.coco import dataloader
 from ..common.models.yolof_mask_regnety_4gf_sam import model
 
 default_batch_size = 16
-batch_size = 2
+batch_size = 16
 x_scheduler = 3
 
 lr_multiplier = default_X_scheduler(x_scheduler, batch_size_16=False, batch_size=batch_size)
@@ -19,7 +19,7 @@ dataloader.test.batch_size = batch_size
 train['output_dir'] = f"./output/yolof_mask_RegNetY_4gf_SAM_{x_scheduler}x"
 train['max_iter'] = 90000 * x_scheduler * default_batch_size // batch_size
 train['eval_period'] = 5000 * x_scheduler * default_batch_size // batch_size
-train['device'] = 'cuda:0'
+train['device'] = 'cuda'
 train['init_checkpoint'] = "https://dl.fbaipublicfiles.com/pycls/dds_baselines/160906838/RegNetY-4.0GF_dds_8gpu.pyth"
 train['cudnn_benchmark '] = True
 
