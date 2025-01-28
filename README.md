@@ -14,19 +14,25 @@ COCO2017 result
 
 ## Instance segmentation results on COCO2017 test
 
-| Config | Lr sched | #params (m) | Mask mAP (%) | #params (m) | download |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-| [ResNet_50](./configs/InstanceSegmentation/yolof_mask_R_50_3x.py) | 3x | 46.8 | 32.4 | 46.8 | [pth](https://drive.google.com/file/d/1rHY5007rUm_QyZKnnVUVrRfXCffLSfR6/view?usp=drive_link) |
-| [ResNet_50_SE_SAM](./configs/InstanceSegmentation/yolof_mask_R_50_SE_SAM_3x.py) | 3x | 49.3 | 34.7 | 49.3 | [pth](https://drive.google.com/file/d/139dUcXqmjrGCCXedviO19sFUy55TQJRB/view?usp=drive_link) |
-| [RegNetX_4gf](./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_3x.py) | 3x | 43.7 | 35.5 | 43.7 | [pth](https://drive.google.com/file/d/1e72alvpqnqt2WFTdhxQpLxPL8_7N7Vs3/view?usp=drive_link) |
-| [RegNetX_4gf_SAM](./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_SAM_3x.py) | 3x | 43.7 | 35.6 | 43.7 | [pth](https://drive.google.com/file/d/1ZyvYjnQjFgGqVt4aZCdDwYmxco4C1Tsj/view?usp=drive_link) |
-| [ConvNeXt_T](./configs/InstanceSegmentation/yolof_mask_ConvNeXt_T_3x.py) | 3x | 50.5 | 34.7 | 50.5 | [pth](https://drive.google.com/file/d/1VEs9mGALp29vpk7ig-HC38lL77Ne3op-/view?usp=drive_link) |
-| [ConvNeXt_T_SAM](./configs/InstanceSegmentation/yolof_mask_ConvNeXt_T_SAM_3x.py) | 3x | 50.5 | 34.8 | 50.5 | [pth](https://drive.google.com/file/d/1aLSYaFoTdR8sDPGVk2ftBGCyg7XcWBs7/view?usp=drive_link) |
+| Config | Lr sched | #params (m) | Mask mAP (%) | download |
+|:---:|:---:|:---:|:---:|:---:|
+| [ResNet_50](./configs/InstanceSegmentation/yolof_mask_R_50_3x.py) | 3x | 46.8 | 32.4 | [pth](https://drive.google.com/drive/folders/15iZM7tSjY7wJ2S368E9dGNOJByiBu_2I?usp=drive_link) |
+| [ResNet_50_SE_SAM](./configs/InstanceSegmentation/yolof_mask_R_50_SE_SAM_3x.py) | 3x | 49.3 | 34.7 | [pth](https://drive.google.com/drive/folders/1wVWqZcuvX3TgzrSGbUdRFtBdOo6ImLzJ?usp=drive_link) |
+| [RegNetX_4gf](./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_3x.py) | 3x | 43.7 | 35.5 | [pth](https://drive.google.com/drive/folders/1j3uuquGrsEIU7UEOHKL8tO3D27yFfpWu?usp=drive_link) |
+| [RegNetX_4gf_SAM](./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_SAM_3x.py) | 3x | 43.7 | 35.6 | [pth](https://drive.google.com/drive/folders/11h_gBfkk6E3bVey5lTGDuewqdxejYj5b?usp=drive_link) |
+| [RegNetY_4gf_SAM](./configs/InstanceSegmentation/yolof_mask_RegNetY_4gf_SAM_3x.py) | 3x | 42.4 | 37.6 | [pth](https://drive.google.com/drive/folders/1XY9Igv1RzyVPfoo0OaL1wffy1gnlamBZ?usp=drive_link) |
+| [ConvNeXt_T](./configs/InstanceSegmentation/yolof_mask_ConvNeXt_T_3x.py) | 3x | 50.5 | 34.7 | [pth](https://drive.google.com/drive/folders/1LxCtYE6lc8_e2FMWo2_7I0_J7h4qR8mr?usp=drive_link) |
+| [ConvNeXt_T_SAM](./configs/InstanceSegmentation/yolof_mask_ConvNeXt_T_SAM_3x.py) | 3x | 50.5 | 34.8 | [pth](https://drive.google.com/drive/folders/1nQbGa7A0O2UV-3bweC1uZSpUrUMUSZHZ?usp=drive_link) |
 
 ## Instance segmentation results on BDD100K val
 
-We are training!!!
-
+| Config | Lr sched | #params (m) | Mask mAP (%) | download |
+|:---:|:---:|:---:|:---:|:---:|
+| [ResNet_50_SE_SAM](./configs/InstanceSegmentation/yolof_mask_R_50_SE_SAM_3x.py) | 3x | 49.3 | 16.49 | [pth](https://drive.google.com/drive/folders/1jR_c3_RELcsdiacY5G_YNxH9HuKvmoh8?usp=drive_link) |
+| [RegNetX_4gf](./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_3x.py) | 3x | 43.7 | 19.76 | [pth](https://drive.google.com/drive/folders/1kENsCdWhwi_8DgCOLWR-_Rde78JsFDBW?usp=drive_link) |
+| [RegNetX_4gf_SAM](./configs/InstanceSegmentation/yolof_mask_RegNetX_4gf_SAM_3x.py) | 3x | 43.7 | 19.67 | [pth](https://drive.google.com/drive/folders/1-5EwqN1oseX1brz2OSDUU98j3JvzuSLC?usp=drive_link) |
+| [RegNetY_4gf_SAM](./configs/InstanceSegmentation/yolof_mask_RegNetY_4gf_SAM_3x.py) | 3x | 42.4 | 19.93 | [pth]() |
+| [ConvNeXt_T_SAM](./configs/InstanceSegmentation/yolof_mask_ConvNeXt_T_SAM_3x.py) | 3x | 50.5 | 16.7 | [pth](https://drive.google.com/drive/folders/1oNEOEVxHsb3skBBTMHveS_iJQny0mjk9?usp=drive_link) |
 
 ## Installation
 
@@ -137,7 +143,3 @@ img_result = out.get_image()[..., ::-1]
 _ = plt.figure(figsize=(12, 10))
 plt.imshow(img_result)
 ```
-
-## Citation
-
-...

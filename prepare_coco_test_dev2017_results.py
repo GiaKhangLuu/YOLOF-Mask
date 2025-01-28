@@ -27,10 +27,10 @@ register_coco_instances(
 dataset_dicts = DatasetCatalog.get('coco_test_dev2017')
 metadata = MetadataCatalog.get('coco_test_dev2017')
 
-config_file = "./configs/InstanceSegmentation/yolof_mask_ConvNeXt_T_3x.py"
-checkpoint_file = "./output/coco/yolof_mask_ConvNeXt_T_3x/model_best.pth"
+config_file = "./configs/InstanceSegmentation/yolof_mask_RegNetY_4gf_SAM_3x.py"
+checkpoint_file = "./output/coco/yolof_mask_RegNetY_4gf_SAM_1x/model_best.pth"
 annot_info_file = annot_path
-results_file = './output/coco_test_infer/detections_test-dev2017_convnext_t_3x_results.json'
+results_file = './output/coco_test_infer/detections_test-dev2017_regnety_4gf_sam_4x_results.json'
 
 cfg = LazyConfig.load(config_file)
 cfg.train.device = 'cuda:0'
