@@ -10,8 +10,6 @@ results
 
 dataset_zoo
 
-*.sh
-
 test/*.ipynb
 
 demo

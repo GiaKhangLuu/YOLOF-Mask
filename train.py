@@ -22,6 +22,8 @@ def main(**kwargs):
     is_resume = kwargs.get("resume")
     num_classes = int(kwargs.get("num_classes"))
     batch_size = int(kwargs.get("batch_size"))
+    device = int(kwargs.get("device"))
+    output_dir = kwargs.get("output_dir")
 
     assert dataset_name in ["bdd100k", "coco2017"]
     assert task in ["ins_seg", "panoptic"]
@@ -70,6 +72,8 @@ def main(**kwargs):
     default_batch_size = 16
     cfg.train['max_iter'] = cfg.train['max_iter'] * default_batch_size // batch_size
     cfg.train['eval_period'] = cfg.train['eval_period'] * default_batch_size // batch_size
+    cfg.train['output_dir'] = output_dir 
+    cfg.train['device'] = f"cuda:{str(device)}"
 
     cfg.dataloader.train.total_batch_size = batch_size
     cfg.dataloader.test.batch_size = batch_size
@@ -83,62 +87,17 @@ def main(**kwargs):
 if __name__ == "__main__":
     # TODO: Add `num_gpus` options
     parser = argparse.ArgumentParser(description="Train a model using a configuration file.")
-    parser.add_argument(
-        "-c", 
-        "--config", 
-        type=str, 
-        required=True, 
-        help="Path to the configuration file."
-    )
-    parser.add_argument(
-        "--image_dir",
-        type=str,
-        required=True,
-        help="Image directory."
-    )
-    parser.add_argument(
-        "--annot_dir",
-        type=str,
-        required=True,
-        help="Annotation directory."
-    )
-    parser.add_argument(
-        "--task",
-        type=str,
-        default="ins_seg",
-        required=True,
-        help="Task to train."
-    )
-    parser.add_argument(
-        "--dataset_name",
-        type=str,
-        default="bdd100k",
-        required=True,
-        help="Name of data to train."
-    )
-    parser.add_argument(
-        "--num_classes",
-        type=int,
-        required=True,
-        help="Number of classes."
-    )
-    parser.add_argument(
-        "--batch_size",
-        type=int,
-        default=16,
-        help="Batch size."
-    )
-    parser.add_argument(
-        "--resume",
-        action="store_true",
-        help="Flag to resume training."
-    )
-    parser.add_argument(
-        "--num_gpus",
-        type=int,
-        default=1,
-        help="Number of GPUs to use."
-    )
+    parser.add_argument("-c", "--config", type=str, required=True, help="Path to the configuration file.")
+    parser.add_argument("--image_dir", type=str, required=True, help="Image directory.")
+    parser.add_argument("--annot_dir", type=str, required=True, help="Annotation directory.")
+    parser.add_argument("--task", type=str, default="ins_seg", required=True, help="Task to train.")
+    parser.add_argument("--dataset_name", type=str, default="bdd100k", required=True, help="Name of data to train.")
+    parser.add_argument("--num_classes", type=int, required=True, help="Number of classes.")
+    parser.add_argument("--batch_size", type=int, default=16, help="Batch size.")
+    parser.add_argument("--device", type=int, default=0, help="Device to use.")
+    parser.add_argument("--output_dir", type=str, default="./output", help="Output directory.")
+    parser.add_argument("--resume", action="store_true", help="Flag to resume training.")
+    parser.add_argument("--num_gpus", type=int, default=1, help="Number of GPUs to use.")
 
     args = parser.parse_args()
     main(**vars(args))
