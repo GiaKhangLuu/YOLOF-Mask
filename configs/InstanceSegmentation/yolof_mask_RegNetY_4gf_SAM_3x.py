@@ -1,3 +1,4 @@
+from detectron2.config import LazyCall as L
 
 from ..common.train import train
 from ..common.optim import AdamW  as optimizer
@@ -9,25 +10,16 @@ default_batch_size = 16
 batch_size = 16
 x_scheduler = 3
 
-lr_multiplier = default_X_scheduler(x_scheduler, batch_size_16=False, batch_size=batch_size)
+lr_multiplier = L(default_X_scheduler)(num_X=x_scheduler, batch_size_16=False)
 
 dataloader.train.mapper.use_instance_mask = True
 dataloader.train.mapper.instance_mask_format = "bitmask"
-dataloader.train.total_batch_size = batch_size
-dataloader.test.batch_size = batch_size
 
 train['output_dir'] = f"./output/yolof_mask_RegNetY_4gf_SAM_{x_scheduler}x"
-train['max_iter'] = 90000 * x_scheduler * default_batch_size // batch_size
-train['eval_period'] = 5000 * x_scheduler * default_batch_size // batch_size
+train['max_iter'] = 90000 * x_scheduler 
+train['eval_period'] = 5000 * x_scheduler 
 train['device'] = 'cuda'
 train['init_checkpoint'] = "https://dl.fbaipublicfiles.com/pycls/dds_baselines/160906838/RegNetY-4.0GF_dds_8gpu.pyth"
 train['cudnn_benchmark '] = True
 
-NUM_CLASSES = 8
-model.num_classes = NUM_CLASSES
-model.mask_head.num_classes = NUM_CLASSES
 model.backbone.freeze_at = 2
-
-#optimizer.params.base_lr = 0.01 
-#optimizer.lr = 0.01 
-#optimizer.weight_decay = 5e-5 

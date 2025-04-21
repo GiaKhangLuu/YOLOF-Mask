@@ -69,6 +69,7 @@ def do_train(args, cfg):
 
     cfg.optimizer.params.model = model
     optim = instantiate(cfg.optimizer)
+    scheduler = instantiate(cfg.lr_multiplier)
 
     train_loader = instantiate(cfg.dataloader.train)
 
@@ -82,7 +83,7 @@ def do_train(args, cfg):
     trainer.register_hooks(
         [
             hooks.IterationTimer(),
-            hooks.LRScheduler(scheduler=instantiate(cfg.lr_multiplier)),
+            hooks.LRScheduler(scheduler=scheduler),
             (
                 hooks.PeriodicCheckpointer(checkpointer, **cfg.train.checkpointer)
                 if comm.is_main_process()

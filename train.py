@@ -20,6 +20,8 @@ def main(**kwargs):
     img_dir = kwargs.get("image_dir")
     annot_dir = kwargs.get("annot_dir")
     is_resume = kwargs.get("resume")
+    num_classes = int(kwargs.get("num_classes"))
+    batch_size = int(kwargs.get("batch_size"))
 
     assert dataset_name in ["bdd100k", "coco2017"]
     assert task in ["ins_seg", "panoptic"]
@@ -62,6 +64,18 @@ def main(**kwargs):
     cfg.dataloader.train.dataset.names = (f'{dataset_name}_train',)
     cfg.dataloader.test.dataset.names = f'{dataset_name}_val'
 
+    cfg.model.num_classes = num_classes
+    cfg.model.mask_head.num_classes = num_classes
+
+    default_batch_size = 16
+    cfg.train['max_iter'] = cfg.train['max_iter'] * default_batch_size // batch_size
+    cfg.train['eval_period'] = cfg.train['eval_period'] * default_batch_size // batch_size
+
+    cfg.dataloader.train.total_batch_size = batch_size
+    cfg.dataloader.test.batch_size = batch_size
+    
+    cfg.lr_multiplier.batch_size = batch_size
+
     default_setup(cfg, args)
 
     do_train(args, cfg)
@@ -101,6 +115,18 @@ if __name__ == "__main__":
         default="bdd100k",
         required=True,
         help="Name of data to train."
+    )
+    parser.add_argument(
+        "--num_classes",
+        type=int,
+        required=True,
+        help="Number of classes."
+    )
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=16,
+        help="Batch size."
     )
     parser.add_argument(
         "--resume",
