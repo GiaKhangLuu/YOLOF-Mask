@@ -13,3 +13,5 @@ dataset_zoo
 test/*.ipynb
 
 demo
+
+*.zip

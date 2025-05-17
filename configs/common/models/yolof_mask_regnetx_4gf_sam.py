@@ -42,7 +42,7 @@ model = L(YOLOF_Mask)(
     ),
     decoder=L(YOLOFDecoder)(
         input_shape=ShapeSpec(channels=512),
-        num_classes="${..num_classes}",
+        num_classes=NUM_CLASSES,
         num_anchors=5,
         cls_num_convs=2,
         reg_num_convs=4,
@@ -62,7 +62,6 @@ model = L(YOLOF_Mask)(
     anchor_matcher=L(UniformMatcher)(
         match_topk=4
     ),
-    num_classes = 80,
     focal_loss_alpha = 0.25,
     focal_loss_gamma = 2.0,
     pixel_mean = constants['imagenet_bgr256_mean'],

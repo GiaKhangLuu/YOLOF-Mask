@@ -28,14 +28,12 @@ class YOLOF(nn.Module):
 
     def __init__(
         self,
-        *,
         backbone: Backbone,
         encoder: nn.Module,
         decoder: nn.Module,
         anchor_generator,
         box2box_transform,
         anchor_matcher,
-        num_classes,
         pixel_mean,
         pixel_std,
         focal_loss_alpha=0.25,
@@ -61,7 +59,7 @@ class YOLOF(nn.Module):
         if len(self.backbone._out_features) > 1:
             raise Exception("YOLOF's backbone just outputs feature maps of one stage only!!!")
 
-        self.num_classes = num_classes
+        self.num_classes = self.decoder.num_classes
 
         # Anchors
         self.anchor_generator = anchor_generator

@@ -56,15 +56,12 @@ def select_foreground_proposals(
 class YOLOF_Mask(YOLOF):
     def __init__(
         self,
-        *,
         pooler: ROIPooler,
         mask_head: MaskRCNNConvUpsampleHead,
         proposal_matcher: Matcher,
-        num_classes: int,
         batch_size_per_image: int,
         positive_fraction: int,
         train_yolof = True,
-        yolof_weight = None,
         **kwargs
     ):
         """
@@ -77,13 +74,13 @@ class YOLOF_Mask(YOLOF):
             input_format: describe the meaning of channels of input. Needed by visualization
             vis_period: the period to run visualization. Set to 0 to disable.
         """
-        super().__init__(num_classes=num_classes, **kwargs)
+        print(kwargs.get("num_classes"))
+        super().__init__(**kwargs)
         self.pooler = pooler
         self.mask_head = mask_head
         self.proposal_matcher = proposal_matcher
 
         self.train_yolof = train_yolof
-        self_weight = yolof_weight
 
         if self.vis_period > 0:
             assert self.input_format is not None, "input_format is required for visualization!"
@@ -94,10 +91,6 @@ class YOLOF_Mask(YOLOF):
         assert (
             self.pixel_mean.shape == self.pixel_std.shape
         ), f"{self.pixel_mean} and {self.pixel_std} have different shapes!"
-        
-        # TODO: Check this function later, assign weight for yolof
-        #if yolof_weight:
-            #DetectionCheckpointer(self).load(self_weight)  # load a file, usually from cfg.MODEL.WEIGHTS
 
     def visualize_training(self, batched_inputs, proposals):
         """

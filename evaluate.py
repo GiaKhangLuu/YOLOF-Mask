@@ -50,6 +50,9 @@ def main(**kwargs):
 
     cfg.dataloader.evaluator.dataset_name = f"{dataset_name}_val"
     cfg.dataloader.test.dataset.names = f"{dataset_name}_val"
+    cfg.model.num_classes = 8
+    cfg.model.decoder.num_classes = 8
+    cfg.model.mask_head.num_classes = 8
 
     model = instantiate(cfg.model)
     model.to(cfg.train.device)

@@ -12,10 +12,15 @@ few common configuration parameters currently defined in "configs/common/train.p
 To add more complicated training logic, you can easily add other configs
 in the config file and implement a new train_net.py to handle them.
 """
+import os
 import logging
 
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import LazyConfig, instantiate
+from detectron2.engine.defaults import create_ddp_model
+from detectron2.evaluation import inference_on_dataset, print_csv_format
+from detectron2.utils import comm
+from detectron2.data.datasets import register_coco_instances
 from detectron2.engine import (
     AMPTrainer,
     SimpleTrainer,
@@ -25,12 +30,32 @@ from detectron2.engine import (
     hooks,
     launch,
 )
-from detectron2.engine.defaults import create_ddp_model
-from detectron2.evaluation import inference_on_dataset, print_csv_format
-from detectron2.utils import comm
+
+from yolof_mask.data import register_bdd100k_coco_format_instances
 
 logger = logging.getLogger("detectron2")
 
+def register_datasets_in_cfg(cfg):
+    assert cfg.dataset.get('name') in ['bdd100k', 'coco2017'], "dataset name must be bdd100k or coco2017"
+    
+    regis_func = register_bdd100k_coco_format_instances if cfg.dataset.name == 'bdd100k' else register_coco_instances
+
+    for split in ["train", "val"]:
+        d_name = cfg.dataset.name + f"_{split}"
+        if cfg.dataset.name == "bdd100k":
+            img_phase_dir = os.path.join(cfg.dataset.img_dir, split)
+            annot_phase_path = os.path.join(cfg.dataset.annot_dir, f"ins_seg_{split}_coco.json")
+        elif cfg.dataset.name == "coco2017":
+            img_phase_dir = os.path.join(cfg.dataset.img_dir, f"{split}2017")
+            annot_phase_path = os.path.join(cfg.dataset.annot_dir, f"instances_{split}2017.json")
+
+        regis_func(
+            d_name,
+            {},
+            annot_phase_path,
+            img_phase_dir
+        )
+        logger.info(f"Register {d_name} dataset.")
 
 def do_test(cfg, model):
     if "evaluator" in cfg.dataloader:
@@ -41,7 +66,6 @@ def do_test(cfg, model):
         )
         print_csv_format(ret)
         return ret
-
 
 def do_train(args, cfg):
     """
@@ -62,6 +86,8 @@ def do_train(args, cfg):
                 checkpointer (dict)
                 ddp (dict)
     """
+    register_datasets_in_cfg(cfg)
+
     model = instantiate(cfg.model)
     logger = logging.getLogger("detectron2")
     logger.info("Model:\n{}".format(model))
