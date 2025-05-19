@@ -18,9 +18,8 @@ from yolof_mask.data import AlbumentationsWrapper, get_filtered_detection_datase
 dataloader = OmegaConf.create()
 
 dataloader.train = L(build_detection_train_loader)(
-    dataset=L(get_filtered_detection_dataset_dicts)(
+    dataset=L(get_detection_dataset_dicts)( 
         names="coco2017_train", 
-        min_box_area=4000
     ),
     mapper=L(DatasetMapper)(
         is_train=True,
@@ -39,12 +38,12 @@ dataloader.train = L(build_detection_train_loader)(
             #AlbumentationsWrapper(A.CLAHE(clip_limit=4.0, p=0.3)),
             #AlbumentationsWrapper(A.Blur(blur_limit=5, p=0.5)),
             L(T.RandomFlip)(horizontal=True),
-            #L(T.RandomRotation)(
-                #angle=[-10, 10],  # rotate between -10 and 10 degrees
-                #expand=False,
-                #center=None,
-                #sample_style="range"
-            #),
+            L(T.RandomRotation)(
+                angle=[-10, 10],  # rotate between -10 and 10 degrees
+                expand=False,
+                center=None,
+                sample_style="range"
+            ),
         ],
         image_format="BGR",
         use_instance_mask=True,

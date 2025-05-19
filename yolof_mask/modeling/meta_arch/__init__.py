@@ -1,4 +1,5 @@
 from .yolof_mask import YOLOF_Mask
+from .yolof import YOLOF
 #from .dense_detector import DenseDetector
 #from .retinanet import RetinaNet
 #from .fcos import FCOS

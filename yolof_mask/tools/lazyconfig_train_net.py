@@ -42,9 +42,10 @@ def register_datasets_in_cfg(cfg):
 
     for split in ["train", "val"]:
         d_name = cfg.dataset.name + f"_{split}"
+        task = cfg.dataset.task
         if cfg.dataset.name == "bdd100k":
             img_phase_dir = os.path.join(cfg.dataset.img_dir, split)
-            annot_phase_path = os.path.join(cfg.dataset.annot_dir, f"ins_seg_{split}_coco.json")
+            annot_phase_path = os.path.join(cfg.dataset.annot_dir, f"{task}_{split}_coco.json")
         elif cfg.dataset.name == "coco2017":
             img_phase_dir = os.path.join(cfg.dataset.img_dir, f"{split}2017")
             annot_phase_path = os.path.join(cfg.dataset.annot_dir, f"instances_{split}2017.json")

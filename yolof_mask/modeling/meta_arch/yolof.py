@@ -10,10 +10,7 @@ from detectron2.layers import CycleBatchNormList, ShapeSpec, batched_nms, cat, g
 from detectron2.structures import Boxes, ImageList, Instances, pairwise_iou
 from detectron2.utils.events import get_event_storage
 
-from detectron2.modeling.anchor_generator import build_anchor_generator
-from detectron2.modeling.backbone import Backbone, build_backbone
-from detectron2.modeling.box_regression import Box2BoxTransform 
-from detectron2.modeling.matcher import Matcher
+from detectron2.modeling.backbone import Backbone
 from detectron2.modeling.meta_arch.dense_detector import permute_to_N_HWA_K  # noqa
 
 from ..box_ops import box_iou, generalized_box_iou
