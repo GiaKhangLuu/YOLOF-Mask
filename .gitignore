@@ -8,6 +8,7 @@ results
 
 *.json
 
+datasets
 dataset_zoo
 
 test/*.ipynb

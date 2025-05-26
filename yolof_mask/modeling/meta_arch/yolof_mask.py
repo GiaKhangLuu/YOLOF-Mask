@@ -74,7 +74,6 @@ class YOLOF_Mask(YOLOF):
             input_format: describe the meaning of channels of input. Needed by visualization
             vis_period: the period to run visualization. Set to 0 to disable.
         """
-        print(kwargs.get("num_classes"))
         super().__init__(**kwargs)
         self.pooler = pooler
         self.mask_head = mask_head
@@ -126,6 +125,28 @@ class YOLOF_Mask(YOLOF):
             vis_name = "Left: GT bounding boxes;  Right: Predicted proposals"
             storage.put_image(vis_name, vis_img)
             break  # only visualize one image in a batch
+
+    def predict(self, inputs):
+        features = self.backbone(inputs)
+        features = features[self.backbone._out_features[-1]]
+
+        # Pass `p5` (output from encoder) to roi pooler
+        # Temporarily hard code this now, haven't modify in config file
+        features_p5 = self.encoder(features)
+        box_cls, box_delta = self.decoder(features_p5)
+        anchors = self.anchor_generator([features_p5])
+        proposals = self.inference([box_cls], [box_delta], anchors, [x.shape[-2:] for x in inputs])
+        proposal_boxes = [x.pred_boxes for x in proposals]
+        box_features = self.pooler([features_p5], proposal_boxes)
+        results = self.mask_head(box_features, proposals)
+
+        processed_results = []
+        for results_per_image in results:
+            height = inputs.shape[2]
+            width = inputs.shape[3]
+            r = detector_postprocess(results_per_image, height, width)
+            processed_results.append({"instances": r})
+        return processed_results
 
     def forward(self, batched_inputs: List[Dict[str, torch.Tensor]]):
         """

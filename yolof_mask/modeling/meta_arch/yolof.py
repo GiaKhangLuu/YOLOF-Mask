@@ -372,3 +372,22 @@ class YOLOF(nn.Module):
         result.scores = scores_all[keep]
         result.pred_classes = class_idxs_all[keep]
         return result
+    
+    def predict(self, inputs):
+        features = self.backbone(inputs)
+        features = features[self.backbone._out_features[-1]]
+
+        # Pass `p5` (output from encoder) to roi pooler
+        # Temporarily hard code this now, haven't modify in config file
+        features_p5 = self.encoder(features)
+        box_cls, box_delta = self.decoder(features_p5)
+        anchors = self.anchor_generator([features_p5])
+        proposals = self.inference([box_cls], [box_delta], anchors, [x.shape[-2:] for x in inputs])
+
+        processed_results = []
+        for results_per_image in proposals:
+            height = inputs.shape[2]
+            width = inputs.shape[3]
+            r = detector_postprocess(results_per_image, height, width)
+            processed_results.append({"instances": r})
+        return processed_results
