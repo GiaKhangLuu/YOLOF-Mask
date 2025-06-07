@@ -51,6 +51,15 @@ We currently support two datasets `BDD100K` and `COCO2017`. Download the dataset
 | BDD100K | [link](https://drive.google.com/file/d/1U9VjD8gRFB30nh-l85cUQyRdbpsypish/view?usp=drive_link) |
 | COCO2017 | [link](https://drive.google.com/file/d/1VeqhcRm4aZYiS4bWOqLtmq0pQNAkxZHR/view?usp=drive_link) |
 
+Create symlink to `datasets` folder.
+
+```
+cd UniPercepNet-S
+mkdir datasets
+ln -s /your/path/to/coco2017/dataset ./datasets
+ln -s /your/path/to/bdd100k/dataset ./datasets
+```
+
 ## Training 
 
 ```bash
