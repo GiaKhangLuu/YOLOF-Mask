@@ -1,6 +1,7 @@
 from detectron2.config import LazyCall as L
 from detectron2.layers import ShapeSpec
-from detectron2.model_zoo.configs.common.data.constants import constants
+from detectron2.modeling.poolers import ROIPooler
+from detectron2.modeling.matcher import Matcher
 
 from yolof_mask.modeling.backbone import RegNet
 from yolof_mask.modeling.backbone.regnet import SimpleStem, ResBottleneckBlock
@@ -12,8 +13,7 @@ from yolof_mask.modeling.meta_arch.yolof_encoder import DilatedEncoder
 from yolof_mask.modeling.meta_arch.yolof_decoder import YOLOFDecoder
 from yolof_mask.modeling.mask_head import MaskRCNNConvUpsampleHead 
 from yolof_mask.modeling.attention.spatial_attention import SpatialAttention
-from detectron2.modeling.poolers import ROIPooler
-from detectron2.modeling.matcher import Matcher
+from yolof_mask.utils.constants import constants
 
 NUM_CLASSES = 10
 

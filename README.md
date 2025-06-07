@@ -1,4 +1,4 @@
-# YOLOF Mask
+# UniPercepNet-S 
 
 This model trained and evaluted on two public datasets: COCO2017 and BDD100K
 
@@ -94,7 +94,7 @@ python3 evaluate.py -c ${CONFIG_FILE} \
 
 ## Inference
 
-To use YOLOF_MASK model, you can predict by CLI or Python code.
+To use UniPercepNet-S model, you can predict by CLI or Python code.
 
 ### CLI
 
